@@ -23,6 +23,7 @@ contract Token {
     balanceOf[msg.sender] = totalSupply;
   }
 
+// deployer perspective
   function transfer(address _to, uint256 _value ) public returns (bool success) {
     require(balanceOf[msg.sender] >= _value);
     _transfer(msg.sender, _to, _value);
@@ -36,6 +37,7 @@ contract Token {
     emit Transfer(_from, _to, _value);
   }
 
+// deployer perspective
   function approve(address _spender, uint256 _value) public returns (bool success)  {
     require(_spender != address(0));
     allowance[msg.sender][_spender] = _value;
@@ -43,6 +45,7 @@ contract Token {
     return true;    
   }
 
+// exchange perspective
   function transferFrom(address _from, address _to, uint256 _value) public returns(bool success) {
     require(_value <= balanceOf[_from]);
     require(_value <= allowance[_from][msg.sender]);
