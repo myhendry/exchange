@@ -12,6 +12,7 @@ contract Exchange {
   mapping(address => mapping(address => uint256)) public tokens;
 
   event Deposit(address token, address user, uint256 amount, uint256 balance);
+  event Withdraw(address token, address user, uint256 amount, uint256 balance);
 
   constructor(address _feeAccount, uint _feePercent) public {
     feeAccount = _feeAccount;
@@ -23,7 +24,25 @@ contract Exchange {
     revert();
   }
 
-  function depositToken(address _token, uint _amount) public {
+  function depositEther() public payable {
+    // Manage Ether deposit - update balance
+    tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].add(msg.value);
+    // Emit Event
+    emit Deposit(ETHER, msg.sender, msg.value, tokens[ETHER][msg.sender]);
+  }
+
+  function withdrawEther(uint _amount) public {
+    // Ensure User's Ether Balance is more than amount to be withdrawn
+    require(tokens[ETHER][msg.sender] >= _amount );
+    // Manage Ether deposit - update balance
+    tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].sub(_amount);
+    // Send Ether back to the Sender
+    msg.sender.transfer(_amount);
+    // Emit Event
+    emit Withdraw(ETHER, msg.sender, _amount, tokens[ETHER][msg.sender]);
+  }
+
+    function depositToken(address _token, uint _amount) public {
     // Do not allow Ether deposits
     require(_token != ETHER);
     // send token to this Exchange
@@ -34,10 +53,19 @@ contract Exchange {
     emit Deposit(_token, msg.sender, _amount, tokens[_token][msg.sender]);
   }
 
-  function depositEther() public payable {
-    // Manage Ether deposit - update balance
-    tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].add(msg.value);
-    // Emit Event
-    emit Deposit(ETHER, msg.sender, msg.value, tokens[ETHER][msg.sender]);
+  function withdrawToken(address _token, uint256 _amount) public {
+     require(_token != ETHER);
+     require(tokens[_token][msg.sender] >= _amount);
+     // Manage Token deposit - update balance
+     tokens[_token][msg.sender] = tokens[_token][msg.sender].sub(_amount);
+     require(Token(_token).transfer(msg.sender, _amount));
+     // Emit Event
+     emit Withdraw(_token, msg.sender, _amount, tokens[_token][msg.sender]);
   }
+
+  function balanceOf(address _token, address _user) public view returns (uint256) {
+    return tokens[_token][_user];
+  }
+
+
 }
