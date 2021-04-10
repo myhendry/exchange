@@ -13,6 +13,7 @@ contract Exchange {
   mapping(uint256 => _Order) public orders;
   uint256 public orderCount;
   mapping(uint256 => bool) public orderCancelled;
+  mapping(uint256 => bool) public orderFilled;
 
   struct _Order {
     uint256 id;
@@ -28,13 +29,14 @@ contract Exchange {
   event Withdraw(address token, address user, uint256 amount, uint256 balance);
   event Order(uint256 id, address user, address tokenGet, uint256 amountGet, address tokenGive, uint256 amountGive, uint256 timestamp);
   event Cancel(uint256 id, address user, address tokenGet, uint256 amountGet, address tokenGive, uint256 amountGive, uint256 timestamp);
+  event Trade(uint id, address user, address tokenGet, uint amountGet, address tokenGive, uint amountGive, address userFill, uint timestamp);
 
   constructor(address _feeAccount, uint _feePercent) public {
     feeAccount = _feeAccount;
     feePercent = _feePercent;
   }
 
-  // fallback: revers if Ether is sent to this smart contract by mistake
+  // fallback: reverts if Ether is sent to this smart contract by mistake
   function() external {
     revert();
   }
@@ -68,7 +70,7 @@ contract Exchange {
     emit Deposit(_token, msg.sender, _amount, tokens[_token][msg.sender]);
   }
 
-  function withdrawToken(address _token, uint256 _amount) public {
+  function withdrawToken(address _token, uint256 _amount) public {  
      require(_token != ETHER);
      require(tokens[_token][msg.sender] >= _amount);
      // Manage Token deposit - update balance
@@ -97,5 +99,35 @@ contract Exchange {
     require(_order.id == _id);
     orderCancelled[_id] = true;
     emit Cancel(_order.id, msg.sender, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, now);
+  }
+
+  function fillOrder(uint256 _id) public {
+    //Ensure Order not filled already, Order not cancelled already and id is valid and not above order count
+    require(_id > 0 && _id <= orderCount);
+    require(!orderFilled[_id]);
+    require(!orderCancelled[_id]);
+    //Fetch the Order
+    _Order storage _order = orders[_id];
+    //Execute Order
+    _trade(_order.id, _order.user, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive);
+    // Mark Order as Filled
+    orderFilled[_order.id] = true;
+  }
+
+  function _trade(uint256 _orderId, address _user, address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) internal {
+    // Fee paid by the user that fills the order, aka msg.sender
+    // Fee deducted from _amountGet
+    uint256 _feeAmount = _amountGet.mul(feePercent).div(100);
+
+    // Execute Trade
+    // Charge Fees
+    tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(_amountGet.add(_feeAmount));
+    tokens[_tokenGet][_user] = tokens[_tokenGet][_user].add(_amountGet);
+    tokens[_tokenGet][feeAccount] = tokens[_tokenGet][feeAccount].add(_feeAmount);
+    tokens[_tokenGive][msg.sender] = tokens[_tokenGive][msg.sender].add(_amountGive);
+    tokens[_tokenGive][_user] = tokens[_tokenGive][_user].sub(_amountGive);
+
+    // Emit Trade Event
+    emit Trade(_orderId, _user, _tokenGet, _amountGet, _tokenGive, _amountGive, msg.sender, now);
   }
 }
