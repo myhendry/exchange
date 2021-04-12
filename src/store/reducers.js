@@ -26,6 +26,7 @@ const token = (state = {}, action) => {
     case TOKEN_LOADED:
       return {
         ...state,
+        loaded: true,
         contract: action.contract,
       };
     default:
@@ -38,6 +39,7 @@ const exchange = (state = {}, action) => {
     case EXCHANGE_LOADED:
       return {
         ...state,
+        loaded: true,
         contract: action.contract,
       };
     default:
