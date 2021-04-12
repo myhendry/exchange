@@ -1,20 +1,28 @@
 import React, { useEffect } from "react";
-import Web3 from "web3";
+import { connect } from "react-redux";
 
-export default () => {
+import {
+  loadWeb3,
+  loadAccount,
+  loadToken,
+  loadExchange,
+} from "../store/interactions";
+
+const App = ({ dispatch }) => {
   useEffect(() => {
-    loadBlockchain();
+    loadBlockchain(dispatch);
   }, []);
 
-  const loadBlockchain = async () => {
+  const loadBlockchain = async (dispatch) => {
     // Modern dapp browsers...
     if (window.ethereum) {
       try {
         await window.ethereum.enable();
-        const web3 = new Web3(window.ethereum);
+        const web3 = loadWeb3(dispatch);
         const networkId = await web3.eth.net.getId();
-        const accounts = await web3.eth.getAccounts();
-        console.log(accounts[0], networkId);
+        await loadAccount(dispatch, web3);
+        await loadToken(web3, networkId, dispatch);
+        await loadExchange(web3, networkId, dispatch);
       } catch (error) {
         console.log(error);
       }
@@ -33,3 +41,9 @@ export default () => {
     </div>
   );
 };
+
+const mapStateToProps = (state) => {
+  return {};
+};
+
+export default connect(mapStateToProps)(App);
