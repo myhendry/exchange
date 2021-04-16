@@ -57,7 +57,7 @@ const App = ({ dispatch, account, contractsLoaded }) => {
         <Content />
       ) : (
         <div>
-          <h1>No Content</h1>
+          <h1 className="font-bold text-green-500">No Content</h1>
         </div>
       )}
     </div>

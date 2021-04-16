@@ -18370,8 +18370,7 @@
             }
           ],
           "name": "Cancel",
-          "type": "event",
-          "signature": "0x77de1da0be5f2d3b110d05c6694e5c4ff2d9da7cd23d84353ecf78c7b5acec61"
+          "type": "event"
         },
         "0xdcbc1c05240f31ff3ad067ef1ee35ce4997762752e3a095284754544f4c709d7": {
           "anonymous": false,
@@ -18402,8 +18401,7 @@
             }
           ],
           "name": "Deposit",
-          "type": "event",
-          "signature": "0xdcbc1c05240f31ff3ad067ef1ee35ce4997762752e3a095284754544f4c709d7"
+          "type": "event"
         },
         "0x9d33853d43e3607b4cc01fdc78338ff2dca6fef7db9232dae6d3eb55fbc3b109": {
           "anonymous": false,
@@ -18452,8 +18450,7 @@
             }
           ],
           "name": "Order",
-          "type": "event",
-          "signature": "0x9d33853d43e3607b4cc01fdc78338ff2dca6fef7db9232dae6d3eb55fbc3b109"
+          "type": "event"
         },
         "0x0dddf4182dc0fc1a311cb75f049c97403c6b8a99cf6b2229a36e7c526acb3f81": {
           "anonymous": false,
@@ -18508,8 +18505,7 @@
             }
           ],
           "name": "Trade",
-          "type": "event",
-          "signature": "0x0dddf4182dc0fc1a311cb75f049c97403c6b8a99cf6b2229a36e7c526acb3f81"
+          "type": "event"
         },
         "0xf341246adaac6f497bc2a656f546ab9e182111d630394f0c57c710a59a2cb567": {
           "anonymous": false,
@@ -18540,17 +18536,16 @@
             }
           ],
           "name": "Withdraw",
-          "type": "event",
-          "signature": "0xf341246adaac6f497bc2a656f546ab9e182111d630394f0c57c710a59a2cb567"
+          "type": "event"
         }
       },
       "links": {},
-      "address": "0x6Bb10Cd64D02ea78148d8160BCBe118D628e530D",
-      "transactionHash": "0x0b970a3ee3ba3530542c76cb562667d0301ce3b8f53c792c4ceb4eea1aa5ffda"
+      "address": "0x1857Db74Bc41C0cfcAe52Ba7bf6A29144Cd18C1B",
+      "transactionHash": "0x1829dc8581401acb75cca0a0c565b8547efd6077c75880699f07058b04cfb572"
     }
   },
-  "schemaVersion": "3.0.19",
-  "updatedAt": "2021-04-10T13:16:38.869Z",
+  "schemaVersion": "3.2.3",
+  "updatedAt": "2021-04-16T01:10:33.477Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
