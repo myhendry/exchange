@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
 import Trades from "./Trades";
+import OrderBook from "./OrderBook";
 import { loadAllOrders } from "../store/interactions";
 import { exchangeSelector } from "../store/selectors";
 
@@ -18,6 +19,7 @@ const Content = ({ dispatch, exchange }) => {
     <div className="max-w-sm rounded overflow-hidden shadow-lg">
       <h1 className="font-bold text-purple-500">Content</h1>
       <Trades />
+      <OrderBook />
     </div>
   );
 };

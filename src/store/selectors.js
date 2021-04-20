@@ -1,4 +1,4 @@
-import { get } from "lodash";
+import { get, groupBy, reject } from "lodash";
 import { createSelector } from "reselect";
 import moment from "moment";
 
@@ -25,6 +25,7 @@ export const contractsLoadedSelector = createSelector(
   (tl, el) => tl && el
 );
 
+// Filled Orders
 const filledOrdersLoaded = (state) =>
   get(state, "exchange.filledOrders.loaded", false);
 export const filledOrdersLoadedSelector = createSelector(
@@ -33,6 +34,7 @@ export const filledOrdersLoadedSelector = createSelector(
 );
 
 const filledOrders = (state) => get(state, "exchange.filledOrders.data", []);
+
 export const filledOrdersSelector = createSelector(filledOrders, (orders) => {
   // Sort orders by date ascending for price comparison
   orders = orders.sort((a, b) => a.timestamp - b.timestamp);
@@ -104,4 +106,99 @@ const tokenPriceClass = (tokenPrice, orderId, previousOrder) => {
   else {
     return RED; // danger
   }
+};
+
+// Cancelled Orders
+const cancelledOrdersLoaded = (state) =>
+  get(state, "exchange.cancelledOrders.loaded", false);
+export const cancelledOrdersLoadedSelector = createSelector(
+  cancelledOrdersLoaded,
+  (loaded) => loaded
+);
+
+const cancelledOrders = (state) =>
+  get(state, "exchange.cancelledOrders.data", []);
+
+export const cancelledOrdersSelector = createSelector(
+  cancelledOrders,
+  (o) => o
+);
+
+// All Orders
+const allOrdersLoaded = (state) =>
+  get(state, "exchange.allOrders.loaded", false);
+
+export const allOrdersLoadedSelector = createSelector(
+  allOrdersLoaded,
+  (loaded) => loaded
+);
+
+const allOrders = (state) => get(state, "exchange.allOrders.data", []);
+
+export const allOrdersSelector = createSelector(allOrders, (a) => a);
+
+const openOrders = (state) => {
+  const all = allOrders(state);
+  const cancelled = cancelledOrders(state);
+  const filled = filledOrders(state);
+
+  const openOrders = reject(all, (order) => {
+    const orderFilled = filled.some((o) => o.id === order.id);
+    const orderCancelled = cancelled.some((o) => o.id === order.id);
+    return orderFilled || orderCancelled;
+  });
+  return openOrders;
+};
+
+const orderBookLoaded = (state) =>
+  cancelledOrdersLoaded(state) &&
+  filledOrdersLoaded(state) &&
+  allOrdersLoaded(state);
+
+export const orderBookLoadedSelector = createSelector(
+  orderBookLoaded,
+  (loaded) => loaded
+);
+
+// Create the Order Book
+export const orderBookSelector = createSelector(openOrders, (orders) => {
+  // Decorate Orders
+  orders = decorateOrderBookOrders(orders);
+  // Group orders by 'orderType'
+  orders = groupBy(orders, "orderType");
+  // Fetch Buy Orders
+  const buyOrders = get(orders, "buy", []);
+  // Sort by orders by token price
+  orders = {
+    ...orders,
+    buyOrders: buyOrders.sort((a, b) => b.tokenPrice - a.tokenPrice),
+  };
+
+  // Fetch Sell Orders
+  const sellOrders = get(orders, "sell", []);
+  // Sort by orders by token price
+  orders = {
+    ...orders,
+    sellOrders: sellOrders.sort((a, b) => b.tokenPrice - a.tokenPrice),
+  };
+  return orders;
+});
+
+const decorateOrderBookOrders = (orders) => {
+  return orders.map((order) => {
+    order = decorateOrder(order);
+    order = decorateOrderBookOrder(order);
+    return order;
+  });
+};
+
+const decorateOrderBookOrder = (order) => {
+  const orderType = order.tokenGive === ETHER_ADDRESS ? "buy" : "sell";
+
+  return {
+    ...order,
+    orderType,
+    orderTypeClass: orderType === "buy" ? GREEN : RED,
+    orderFillClass: orderType === "buy" ? "sell" : "buy",
+  };
 };
