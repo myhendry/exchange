@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import Trades from "./Trades";
 import OrderBook from "./OrderBook";
+import MyTransactions from "./MyTransactions";
 import { loadAllOrders } from "../store/interactions";
 import { exchangeSelector } from "../store/selectors";
 
@@ -20,6 +21,7 @@ const Content = ({ dispatch, exchange }) => {
       <h1 className="font-bold text-purple-500">Content</h1>
       <Trades />
       <OrderBook />
+      <MyTransactions />
     </div>
   );
 };
