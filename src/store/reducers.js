@@ -8,6 +8,8 @@ import {
   CANCELLED_ORDERS_LOADED,
   FILLED_ORDERS_LOADED,
   ALL_ORDERS_LOADED,
+  ORDER_CANCELLING,
+  ORDER_CANCELLED,
 } from "./actions";
 
 const web3 = (state = {}, action) => {
@@ -64,6 +66,17 @@ const exchange = (state = {}, action) => {
         allOrders: {
           loaded: true,
           data: action.allOrders,
+        },
+      };
+    case ORDER_CANCELLING:
+      return { ...state, orderCancelling: true };
+    case ORDER_CANCELLED:
+      return {
+        ...state,
+        orderCancelling: false,
+        cancelledOrders: {
+          ...state.cancelledOrders,
+          data: [...state.cancelledOrders.data, action.order],
         },
       };
     default:

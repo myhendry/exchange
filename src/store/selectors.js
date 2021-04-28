@@ -282,3 +282,10 @@ const decorateMyOpenOrder = (order, account) => {
     orderTypeClass: orderType === "buy" ? GREEN : RED,
   };
 };
+
+const orderCancelling = (state) =>
+  get(state, "exchange.orderCancelling", false);
+export const orderCancellingSelector = createSelector(
+  orderCancelling,
+  (status) => status
+);

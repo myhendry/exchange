@@ -5,6 +5,8 @@ export const EXCHANGE_LOADED = "EXCHANGE_LOADED";
 export const CANCELLED_ORDERS_LOADED = "CANCELLED_ORDERS_LOADED";
 export const FILLED_ORDERS_LOADED = "FILLED_ORDERS_LOADED";
 export const ALL_ORDERS_LOADED = "ALL_ORDERS_LOADED";
+export const ORDER_CANCELLING = "ORDER_CANCELLING";
+export const ORDER_CANCELLED = "ORDER_CANCELLED";
 
 export const web3Loaded = (connection) => {
   return {
@@ -52,5 +54,18 @@ export const allOrdersLoaded = (allOrders) => {
   return {
     type: ALL_ORDERS_LOADED,
     allOrders,
+  };
+};
+
+export const orderCancelling = () => {
+  return {
+    type: ORDER_CANCELLING,
+  };
+};
+
+export const orderCancelled = (order) => {
+  return {
+    type: ORDER_CANCELLED,
+    order,
   };
 };

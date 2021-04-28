@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import Trades from "./Trades";
 import OrderBook from "./OrderBook";
 import MyTransactions from "./MyTransactions";
-import { loadAllOrders } from "../store/interactions";
+import { loadAllOrders, subscribeToEvents } from "../store/interactions";
 import { exchangeSelector } from "../store/selectors";
 
 const Content = ({ dispatch, exchange }) => {
@@ -14,6 +14,7 @@ const Content = ({ dispatch, exchange }) => {
 
   const loadBlockchainData = async (dispatch) => {
     await loadAllOrders(exchange, dispatch);
+    await subscribeToEvents(exchange, dispatch);
   };
 
   return (
