@@ -10,6 +10,8 @@ import {
   ALL_ORDERS_LOADED,
   ORDER_CANCELLING,
   ORDER_CANCELLED,
+  ORDER_FILLING,
+  ORDER_FILLED
 } from "./actions";
 
 const web3 = (state = {}, action) => {
@@ -40,6 +42,8 @@ const token = (state = {}, action) => {
 };
 
 const exchange = (state = {}, action) => {
+  let index, data
+  
   switch (action.type) {
     case EXCHANGE_LOADED:
       return {
@@ -79,6 +83,26 @@ const exchange = (state = {}, action) => {
           data: [...state.cancelledOrders.data, action.order],
         },
       };
+    case ORDER_FILLING:
+      return { ...state, orderFilling: true };
+    case ORDER_FILLED:
+      // Prevent Duplicate Orders
+      index = state.filledOrders.data.findIndex(order => order.id === action.order.id)
+
+      if (index === -1) {
+        data = [...state.filledOrders.data, action.order]
+      } else {
+        data = state.filledOrders.data
+      }
+      
+      return {
+        ...state,
+        orderFilling: false,
+        filledOrders: {
+          ...state.filledOrders,
+          data
+        }
+      }
     default:
       return state;
   }
