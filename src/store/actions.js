@@ -19,6 +19,13 @@ export const ETHER_DEPOSIT_AMOUNT_CHANGED = 'ETHER_DEPOSIT_AMOUNT_CHANGED'
 export const ETHER_WITHDRAW_AMOUNT_CHANGED = 'ETHER_WITHDRAW_AMOUNT_CHANGED'
 export const TOKEN_DEPOSIT_AMOUNT_CHANGED = 'TOKEN_DEPOSIT_AMOUNT_CHANGED'
 export const TOKEN_WITHDRAW_AMOUNT_CHANGED = 'TOKEN_WITHDRAW_AMOUNT_CHANGED'
+export const BUY_ORDER_AMOUNT_CHANGED = 'BUY_ORDER_AMOUNT_CHANGED'
+export const BUY_ORDER_PRICE_CHANGED = 'BUY_ORDER_PRICE_CHANGED'
+export const BUY_ORDER_MAKING = 'BUY_ORDER_MAKING'
+export const ORDER_MADE = 'ORDER_MADE'
+export const SELL_ORDER_AMOUNT_CHANGED = 'SELL_ORDER_AMOUNT_CHANGED'
+export const SELL_ORDER_PRICE_CHANGED = 'SELL_ORDER_PRICE_CHANGED'
+export const SELL_ORDER_MAKING = 'SELL_ORDER_MAKING'
 
 export const web3Loaded = (connection) => {
   return {
@@ -162,5 +169,52 @@ export const tokenWithdrawAmountChanged = amount => {
   return {
     type: TOKEN_WITHDRAW_AMOUNT_CHANGED,
     amount
+  }
+}
+
+export const buyOrderAmountChanged = amount => {
+  return {
+    type: BUY_ORDER_AMOUNT_CHANGED,
+    amount
+  }
+}
+
+export const buyOrderPriceChanged = price => {
+  return {
+    type: BUY_ORDER_PRICE_CHANGED,
+    price
+  }
+}
+
+export const buyOrderMaking = price => {
+  return {
+    type: BUY_ORDER_MAKING
+  }
+}
+
+export const orderMade = order => {
+  return {
+    type: ORDER_MADE,
+    order
+  }
+}
+
+export const sellOrderAmountChanged = amount => {
+  return {
+    type: SELL_ORDER_AMOUNT_CHANGED,
+    amount
+  }
+}
+
+export const sellOrderPriceChanged = price => {
+  return {
+    type: SELL_ORDER_PRICE_CHANGED,
+    price
+  }
+}
+
+export const sellOrderMaking = price => {
+  return {
+    type: SELL_ORDER_MAKING
   }
 }

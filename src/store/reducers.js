@@ -21,8 +21,14 @@ import {
   ETHER_DEPOSIT_AMOUNT_CHANGED,
   ETHER_WITHDRAW_AMOUNT_CHANGED,
   TOKEN_DEPOSIT_AMOUNT_CHANGED,
-  TOKEN_WITHDRAW_AMOUNT_CHANGED
-
+  TOKEN_WITHDRAW_AMOUNT_CHANGED,
+  BUY_ORDER_AMOUNT_CHANGED,
+  BUY_ORDER_PRICE_CHANGED,
+  BUY_ORDER_MAKING,
+  ORDER_MADE,
+  SELL_ORDER_AMOUNT_CHANGED,
+  SELL_ORDER_PRICE_CHANGED,
+  SELL_ORDER_MAKING
 } from "./actions";
 
 const web3 = (state = {}, action) => {
@@ -159,6 +165,64 @@ const exchange = (state = {}, action) => {
         ...state,
         tokenWithdrawAmount: action.amount
       }
+    case BUY_ORDER_AMOUNT_CHANGED:
+      return {
+        ...state,
+        buyOrder: {
+          ...state.buyOrder,
+          amount: action.amount
+        }
+      }
+    case BUY_ORDER_PRICE_CHANGED:
+      return {
+        ...state,
+        buyOrder: {
+          ...state.buyOrder,
+          price: action.price
+        }
+      }
+    case BUY_ORDER_MAKING:
+      return {
+        ...state,
+        buyOrder: {
+          ...state.buyOrder,
+          amount: null,
+          price: null,
+          making: true
+        }
+      }
+    case ORDER_MADE:
+        // Prevent duplicate orders
+        index = state.allOrders.data.findIndex(order => order.id === action.order.id);
+  
+        if(index === -1) {
+          data = [...state.allOrders.data, action.order]
+        } else {
+          data = state.allOrders.data
+        }
+  
+        return {
+          ...state,
+          allOrders: {
+            ...state.allOrders,
+            data
+          },
+          buyOrder: {
+            ...state.buyOrder,
+            making: false
+          },
+          sellOrder: {
+            ...state.sellOrder,
+            making: false
+          }
+        }
+  
+    case SELL_ORDER_AMOUNT_CHANGED:
+        return { ...state, sellOrder: { ...state.sellOrder, amount: action.amount } }
+    case SELL_ORDER_PRICE_CHANGED:
+        return { ...state, sellOrder: { ...state.sellOrder, price: action.price } }
+    case SELL_ORDER_MAKING:
+        return { ...state, sellOrder: { ...state.sellOrder, amount: null, price: null, making: true } }
     default:
       return state;
   }

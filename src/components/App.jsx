@@ -10,7 +10,8 @@ import {
   loadExchange,
 } from "../store/interactions";
 import Content from "./Content";
-import Balance from './Balance'
+import Balance from './Balance';
+import NewOrder from './NewOrder';
 
 class App extends React.Component {
   componentWillMount() {
@@ -37,12 +38,13 @@ class App extends React.Component {
   render() {
     return (
 <div>
-      <h1>Deposits 45:17</h1>
+      <h1>Create Orders 13:51</h1>
       <h5>{this.props.account}</h5>
       {this.props.contractsLoaded ? (
         <div>
-        <Balance />
-        <Content />
+          <NewOrder />
+          <Balance />
+          <Content />
         </div>
       ) : (
         <div>
