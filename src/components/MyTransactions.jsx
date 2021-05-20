@@ -31,7 +31,6 @@ const showMyFillOrders = (myFilledOrders) => {
 };
 
 const showMyOpenOrders = (props) => {
-  console.log("props", props);
   const { myOpenOrders, dispatch, exchange, account } = props;
   return (
     <div>
